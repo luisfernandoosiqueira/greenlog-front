@@ -1,0 +1,26 @@
+@use '../../styles/cor_modelo.scss' as *;
+
+.direitos{
+    width: 100%;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: $verde-principal;
+    border-top: 4px solid $verde-secundario;
+
+    h2{
+        font-size: 0.6em;
+        text-align: center;
+        font-weight: 500;
+        letter-spacing: 2px;
+        color: $branco-txt;
+    }
+}
+@media (max-width: 999px){
+    .direitos{
+        h2{
+            font-size: 9px;
+        }
+    }
+}

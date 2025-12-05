@@ -1,0 +1,49 @@
+<app-nav-bar/>
+<main>
+    <div class="header-pagina">
+        <a [routerLink]="['/']" class="btn-voltar"><img src="assets/seta.png" alt=""></a>
+        <h1>Gerenciamento de Motorista</h1>
+        <button (click)="abrirModalNovo()" class="btn-novo">Novo Motorista</button>
+    </div>
+    <div class="tabela-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th class="col-pos">Nº</th>
+                    <th class="col-nome">Nome</th>
+                    <th class="col-cpf">CPF</th>
+                    <th class="col-status">Status</th>
+                    <th class="col-data">Data Nascimento</th>
+                    <th class="col-telefone">Telefone</th>
+                    <th class="col-acao">Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngIf="listaMotorista.length === 0">
+                    <td colspan="7" class="linha-vazia">Nenhum funcionário cadastrado.</td>
+                </tr>
+                <tr *ngFor="let m of listaMotorista; let i = index">
+                    <td class="col-pos">{{i + 1}}</td>
+                    <td class="col-nome">{{m.nome}}</td>
+                    <td class="col-cpf">{{formatarCPF(m.cpf)}}</td>
+                    <td class="col-status">
+                        <span class="status-badge" [ngClass]="getStatusClass(m.status)">
+                            {{m.status}}
+                        </span>
+                    </td>
+                    <td class="col-data">{{m.data | date:'dd/MM/yyyy'}}</td>
+                    <td class="col-telefone">{{formatarTelefone(m.telefone)}}</td>
+                    <td class="col-acao"><button (click)="abrirModalEditar(m)" class="btn-editar">Editar</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+<app-footer/>
+<div *ngIf="exibirModal">
+    <app-novo-motorista
+        [motoristaParaEditar]="motoristaParaAtualizar"
+        (aoSalvar)="salvarMotorista($event); fecharModel()" 
+        (aoCancelar)="fecharModel()">
+    </app-novo-motorista>
+</div>

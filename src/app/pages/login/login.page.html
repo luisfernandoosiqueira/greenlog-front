@@ -1,0 +1,27 @@
+<div class="login-container">
+  <img src="assets/logo.png" class="logo" />
+
+  <form [formGroup]="loginForm" (ngSubmit)="login()" class="login-box">
+    <div class="box-button">
+        <input 
+            type="text" 
+            formControlName="username" 
+            placeholder="Nome de usuário"
+            [ngClass]="{ 'error': submitted && loginForm.controls['username'].invalid }"
+            />
+
+        <input 
+        type="password" 
+        formControlName="password" 
+        placeholder="Senha"
+        [ngClass]="{ 'error': submitted && loginForm.controls['password'].invalid }"
+        />
+    </div>
+    
+    <div class="error-message" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <button type="submit">Entrar</button>
+  </form>
+</div>

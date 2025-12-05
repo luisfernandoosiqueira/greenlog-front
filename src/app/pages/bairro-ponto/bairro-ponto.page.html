@@ -1,0 +1,24 @@
+<app-nav-bar/>
+<main>
+    <div class="header-pagina">
+        <a [routerLink]="['/']" class="btn-voltar"><img src="assets/seta.png" alt=""></a>
+        <h1>Gerenciamento de Bairro</h1>
+        <button (click)="abrirModalNovoBairro()" class="btn-novo">Novo Bairro</button>
+    </div>
+    <div class="container" *ngIf="listaBairros.length === 0">
+        <span>Nenhum bairro cadastrado.</span>
+    </div>
+    <div class="container" *ngFor="let bairro of listaBairros; let i = index">
+        <app-box-bairro
+            [bairro]="bairro">
+        </app-box-bairro>
+    </div>
+</main>
+<app-footer/>
+<div *ngIf="exibirModalBairro">
+    <app-novo-bairro
+        [bairroParaEditar]="null"
+        (aoSalvar)="salvarBairro($event); fecharModalBairro()" 
+        (aoCancelar)="fecharModalBairro()">
+    </app-novo-bairro>
+</div>

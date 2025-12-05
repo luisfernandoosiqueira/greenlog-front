@@ -1,0 +1,17 @@
+<div class="modal-backdrop">
+    <div class="modal">
+        <h2>{{ bairroParaEditar ? 'Editar Bairro' : 'Novo Bairro' }}</h2>
+        <form [formGroup]="form" (ngSubmit)="salvar()">
+            <div class="row">
+                <div class="form-group">
+                    <label>Nome*</label>
+                    <input type="text" formControlName="nome" placeholder="Nome">
+                </div>
+            </div>
+            <div class="actions">
+                <button type="button" (click)="cancelar()" class="btn-cancel">Cancelar</button>
+                <button type="submit" class="btn-save" [disabled]="form.invalid">{{ bairroParaEditar ? 'Atualizar' : 'Salvar' }}</button>
+            </div>
+        </form>
+    </div>
+</div>

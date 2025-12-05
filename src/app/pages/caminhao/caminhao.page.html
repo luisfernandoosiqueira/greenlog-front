@@ -1,0 +1,52 @@
+<app-nav-bar/>
+<main>
+    <div class="header-pagina">
+        <a [routerLink]="['/']" class="btn-voltar"><img src="assets/seta.png" alt=""></a>
+        <h1>Gerenciamento de Caminhões</h1>
+        <button (click)="abrirModalNovo()" class="btn-novo">Novo Caminhão</button>
+    </div>
+    <div class="tabela-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th class="col-pos">Nº</th>
+                    <th class="col-placa">Placa</th>
+                    <th class="col-motorista">Motorista</th>
+                    <th class="col-capacidade">Capacidade</th>
+                    <th class="col-status">Status</th>
+                    <th class="col-tipo">Tipo Residuo</th>
+                    <th class="col-acao">Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngIf="listaCaminhao.length === 0">
+                    <td colspan="7" class="linha-vazia">Nenhum funcionário cadastrado.</td>
+                </tr>
+                <tr *ngFor="let c of listaCaminhao; let i = index">
+                    <td class="col-pos">{{i + 1}}</td>
+                    <td class="col-placa">{{c.placa}}</td>
+                    <td class="col-motorista">{{c.motorista.nome}}</td>
+                    <td class="col-capacidade">{{c.capacidadeKg}} kg</td>
+                    <td class="col-status">
+                        <span class="status-badge" [ngClass]="getStatusClass(c.status)">
+                            {{c.status}}
+                        </span>
+                    </td>
+                    <td class="col-tipo">
+                        {{ getTiposTexto(c.tiposResiduos) }}
+                    </td>
+                    <td class="col-acao"><button (click)="abrirModalEditar(c)" class="btn-editar">Editar</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+<app-footer/>
+<div *ngIf="exibirModal">
+    <app-novo-caminhao
+        [caminhaoParaEditar]="caminhaoParaAtualizar"
+        (aoSalvar)="salvarCaminhao($event); fecharModel()" 
+        (aoCancelar)="fecharModel()">
+        >
+    </app-novo-caminhao>
+</div>

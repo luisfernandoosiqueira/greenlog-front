@@ -1,0 +1,47 @@
+<app-nav-bar/>
+<main>
+    <div class="header-pagina">
+        <a [routerLink]="['/']" class="btn-voltar"><img src="assets/seta.png" alt=""></a>
+        <h1>Gerenciamento de Rotas</h1>
+        <button (click)="abrirModalNovo()" class="btn-novo">Nova Rota</button>
+    </div>
+    <div class="tabela-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th class="col-pos">Nº</th>
+                    <th class="col-nome">Nome da Rota</th>
+                    <th class="col-motorista">Motorista</th>
+                    <th class="col-caminhao">Caminhão</th>
+                    <th class="col-distancia">Distância</th>
+                    <th class="col-peso">Peso</th>
+                    <th class="col-residuo">Residuos</th>
+                    <th class="col-acao">Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngIf="listaRota.length === 0">
+                    <td colspan="8" class="linha-vazia">Nenhum conexão cadastrado.</td>
+                </tr>
+                <tr *ngFor="let r of listaRota; let i = index">
+                    <td class="col-pos">Nº</td>
+                    <td class="col-nome">{{r.nome}}</td>
+                    <td class="col-motorista">{{r.caminhao.motorista.nome}}</td>
+                    <td class="col-caminhao">{{r.caminhao.placa}}</td>
+                    <td class="col-distancia">{{r.distanciaTotal}}</td>
+                    <td class="col-peso">{{r.pesoTotal}}</td>
+                    <td class="col-residuo">{{r.tipoResiduo}}</td>
+                    <td class="col-acao"><button (click)="abrirModalEditar(r)" class="btn-editar">Editar</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+<app-footer/>
+<div *ngIf="exibirModal">
+    <app-nova-rota
+        [rotaParaEditar]="rotaParaAtualizar"
+        (aoSalvar)="salvar($event); fecharModel()" 
+        (aoCancelar)="fecharModel()">
+    </app-nova-rota>
+</div>

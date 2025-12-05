@@ -1,0 +1,66 @@
+<section>
+    <div class="header">
+        <img src="assets/rota.png" alt="" srcset="">
+        <h2>{{itinerario?.rota?.nome}}</h2>
+        <span class="preencher-espaco"></span>
+        <h3>Data: {{itinerario?.data}}</h3>
+    </div>
+    <div class="row">
+        <div class="group">
+            <h4>Distancia:</h4>
+            <label for="">{{itinerario?.distanciaTotal}}</label>
+        </div>
+        <div class="group">
+            <h4>Peso Previsto:</h4>
+            <label for="">{{itinerario?.rota?.pesoTotal}}</label>
+        </div>
+        <div class="group">
+            <h4>Status:</h4>
+            <label for="">{{itinerario?.ativo}}</label>
+        </div>   
+    </div>
+    <div class="line"></div>
+    <div class="row">
+        <div class="group">
+            <img src="assets/truck_papel.png" alt="" srcset="">
+            <h3>{{itinerario?.rota?.caminhao?.placa}}</h3>
+        </div>
+        <div class="group">
+            <img src="assets/motorista.png" alt="" srcset="">
+            <h3>{{itinerario?.rota?.caminhao?.motorista?.nome}}</h3>
+        </div>
+        <div class="group">
+            <img src="assets/recycling_b.png" alt="" srcset="">
+            <h3>{{itinerario?.rota?.tipoResiduo}}</h3>
+        </div>   
+    </div>
+    <div class="line"></div>
+    <div class="row">
+        <div class="group">
+            <img class="img-rota" src="assets/estrada-de-rota.png" alt="" srcset="">
+            <h3>ROTA</h3>
+        </div>
+    </div>
+    <div class="container-rotas" *ngFor="let trecho of itinerario?.rota?.trechos">
+        
+        <div class="row-rota">
+            
+            <!-- Origem da PRIMEIRA rua -->
+            <span class="bairro-origem">{{ trecho.ruas[0].origem.nome }}</span>
+
+            <!-- Loop nas ruas para mostrar seta + distancia + destino -->
+            <ng-container *ngFor="let rua of trecho.ruas">
+                <div class="seta">
+                    <div class="line-wrapper">
+                        <p class="line-label">{{ rua.distanciaKm }} km</p>
+                        <div class="line-seta"></div>
+                    </div>
+                </div>
+
+                <span class="bairro-destino">{{ rua.destino.nome }}</span>
+            </ng-container>
+
+        </div>
+
+    </div>
+</section>

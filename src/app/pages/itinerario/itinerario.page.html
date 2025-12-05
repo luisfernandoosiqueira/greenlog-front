@@ -1,0 +1,36 @@
+<app-nav-bar/>
+<main>
+    <div class="header-pagina">
+        <a [routerLink]="['/']" class="btn-voltar"><img src="assets/seta.png" alt=""></a>
+        <h1>Itinerário</h1>
+    </div>
+    <div class="header-pesquisa">
+        <div class="box-select">
+            <label>Selecione uma data:</label>
+            <input type="date" [(ngModel)]="dataSelecionada">
+        </div>
+        <div class="box-btn">
+            <button (click)="pesquisarItinerario(dataSelecionada)" class="btn-pesquisar">Pesquisar</button>
+            <button (click)="abrirModalNovo()" class="btn-novo">Novo Itinerário</button>
+        </div>
+    </div>
+    <div class="container-itinerario" *ngIf="dataAtiva === false">     
+        <span>Selecione uma data.</span>   
+    </div>
+    <div class="container-itinerario" *ngIf="listaItinerarioData.length === 0 && dataAtiva === true">     
+        <span>Nenhum itinerário cadastrado para essa data.</span>   
+    </div>
+    <div class="container-itinerario" *ngFor="let itinerario of listaItinerarioData; let i = index">
+        <app-box-itinerario
+            [itinerario]="itinerario">
+        </app-box-itinerario>
+    </div>
+</main>
+<app-footer/>
+<div *ngIf="exibirModal">
+    <app-novao-itinerario
+        [itinerarioParaEditar]="itinerarioParaAtualizar"
+        (aoSalvar)="salvarItinerario($event); fecharModel()" 
+        (aoCancelar)="fecharModel()">
+    </app-novao-itinerario>
+</div>

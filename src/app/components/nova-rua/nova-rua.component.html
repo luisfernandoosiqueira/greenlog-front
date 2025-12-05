@@ -1,0 +1,38 @@
+<div class="modal-backdrop">
+    <div class="modal">
+        <h2>{{ ruaParaEditar ? 'Editar Rua' : 'Nova Rua' }}</h2>
+        <form [formGroup]="form" (ngSubmit)="salvar()">
+            <div class="row">
+                <div class="form-group">
+                    <label>Bairro Origem*</label>
+                    <select formControlName="origemId">
+                        <option [value]="null" disabled>Selecione...</option>
+                        <option *ngFor="let bairro of listaBairros" [value]="bairro.id">
+                            {{ bairro.nome }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Bairro Destino*</label>
+                    <select formControlName="destinoId">
+                        <option [value]="null" disabled>Selecione...</option>
+                        <option *ngFor="let bairro of listaBairros" [value]="bairro.id">
+                            {{ bairro.nome }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label>Distância*</label>
+                    <input type="text" formControlName="distanciaKm" placeholder="0km">
+                </div>
+            </div>
+            <div class="actions">
+                <button type="button" (click)="cancelar()" class="btn-cancel">Cancelar</button>
+                <button type="submit" class="btn-save" [disabled]="form.invalid">{{ ruaParaEditar ? 'Atualizar' : 'Salvar' }}</button>
+            </div>
+        </form>
+    </div>
+</div>

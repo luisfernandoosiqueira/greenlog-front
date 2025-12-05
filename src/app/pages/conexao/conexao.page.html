@@ -1,0 +1,41 @@
+<app-nav-bar/>
+<main>
+    <div class="header-pagina">
+        <a [routerLink]="['/']" class="btn-voltar"><img src="assets/seta.png" alt=""></a>
+        <h1>Gerenciamento de Conexão</h1>
+        <button (click)="abrirModalNovo()" class="btn-novo">Nova Conexão</button>
+    </div>
+    <div class="tabela-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th class="col-pos">Nº</th>
+                    <th class="col-bairro-origem">Bairro Origem</th>
+                    <th class="col-bairro-destino">Bairro Destino</th>
+                    <th class="col-distancia">Distância</th>
+                    <th class="col-acao">Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngIf="listaRuas.length === 0">
+                    <td colspan="5" class="linha-vazia">Nenhum conexão cadastrado.</td>
+                </tr>
+                <tr *ngFor="let r of listaRuas; let i = index">
+                    <td class="col-pos">{{i + 1}}</td>
+                    <td class="col-bairro-origem">{{r.origem.nome}}</td>
+                    <td class="col-bairro-destino">{{r.destino.nome}}</td>
+                    <td class="col-distancia">{{r.distanciaKm}} km</td>
+                    <td class="col-acao"><button (click)="abrirModalEditar(r)" class="btn-editar">Editar</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+<app-footer/>
+<div *ngIf="exibirModal">
+    <app-nova-rua
+        [ruaParaEditar]="ruaParaAtualizar"
+        (aoSalvar)="salvar($event); fecharModel()"
+        (aoCancelar)="fecharModel()">
+    </app-nova-rua>
+</div>

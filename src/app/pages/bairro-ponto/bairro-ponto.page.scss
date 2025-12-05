@@ -1,0 +1,73 @@
+@use '../../styles/cor_modelo.scss' as *;
+@use "sass:color";
+
+main {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 30px;
+    min-height: calc(100vh - 120px);
+
+    .header-pagina {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+
+        a img{
+            height: 32px;
+        }
+
+        h1 {
+            color: $verde-principal;
+            margin: 0;
+        }
+
+        .btn-novo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: $verde-secundario;
+            color: $background;
+            padding: 10px 0;
+            width: 140px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.5s ease;
+
+            &:hover {
+                background-color: color.adjust($verde-secundario, $lightness: -10%);
+            }
+        }
+
+        .btn-voltar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 0;
+            width: 50px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.5s ease;
+
+            &:hover {
+                transform: scale(1.1);
+            }
+        }
+    }
+
+    .container{
+        display: flex;
+        justify-content: center;
+    }
+    
+    .container app-box-bairro {
+        flex: 1;
+    }
+}

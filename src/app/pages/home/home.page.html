@@ -1,0 +1,38 @@
+<app-nav-bar/>
+<main class="home-container">
+    <h1>Bem-vindo ao GreemLog Solutions</h1>
+    <p class="subtitulo">Selecione uma opção abaixo para começar</p>
+
+    <div class="menu-grid">
+        <div class="menu-card" [routerLink]="['/itinerario']">
+            <img class="card-icon"src="assets/icon-itinerario.png" alt="" srcset="">
+            <a>Itinerários</a>
+        </div>
+        <div class="menu-card" [routerLink]="['/bairro']">
+            <img class="card-icon"src="assets/icon-bairro.png" alt="" srcset="">
+            <a>Bairro & Pontos</a>
+        </div>
+        <div class="menu-card" [routerLink]="['/conexao']">
+            <img class="card-icon"src="assets/icon-conexao.png" alt="" srcset="">
+            <a>Conexão</a>
+        </div>
+        <div class="menu-card" [routerLink]="['/rota']">
+            <img class="card-icon"src="assets/icon-rota.png" alt="" srcset="">
+            <a>Rotas</a>
+        </div>
+        <div class="menu-card" [routerLink]="['/motorista']">
+            <img class="card-icon"src="assets/icon-motorista.png" alt="" srcset="">
+            <a>Motorista</a>
+        </div>
+        <div class="menu-card" [routerLink]="['/caminhao']">
+            <img class="card-icon"src="assets/icon-caminhao.png" alt="" srcset="">
+            <a>Caminhão</a>
+        </div>
+        <!--
+        <div class="menu-card" [routerLink]="['/']">
+            <img class="card-icon"src="assets/icon-config.png" alt="" srcset="">
+            <a>Configuração</a>
+        </div>-->
+    </div>
+</main>
+<app-footer/>

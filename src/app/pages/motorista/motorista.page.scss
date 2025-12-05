@@ -1,0 +1,216 @@
+@use '../../styles/cor_modelo.scss' as *;
+@use "sass:color";
+
+main {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 30px;
+    min-height: calc(100vh - 120px);
+
+    .header-pagina {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+
+        a img{
+            height: 32px;
+        }
+
+        h1 {
+            color: $verde-principal;
+            margin: 0;
+        }
+
+        .btn-novo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: $verde-secundario;
+            color: $background;
+            padding: 10px 0;
+            width: 140px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.5s ease;
+
+            &:hover {
+                background-color: color.adjust($verde-secundario, $lightness: -10%);
+            }
+        }
+
+        .btn-voltar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 0;
+            width: 50px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.5s ease;
+
+            &:hover {
+                transform: scale(1.1);
+            }
+        }
+    }
+
+    .tabela-wrapper {
+        width: 100%;
+        overflow-x: auto; 
+        background-color: $background;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+        table{
+            width: 100%;
+            border-collapse: collapse;
+
+            thead {
+                tr {
+                    th {
+                        background-color: $verde-principal;
+                        color: $background;
+                        padding: 20px;
+                        font-size: 1em;
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+                    }
+                    .col-pos {
+                        width: 5%;
+                        text-align: center;
+                    }
+                    .col-cpf {
+                        width: 10%;
+                        text-align: center;
+                    } 
+                    .col-nome {
+                        width: 30%;
+                        text-align: start;
+                    } 
+                    .col-data {
+                        width: 15%;
+                        text-align: center;
+                    }
+                    .col-telefone {
+                        width: 10%;
+                        text-align: center;
+                    } 
+                    .col-status {
+                        width: 5%;
+                        text-align: center;
+                    } 
+                    .col-acao {
+                        width: 10%;
+                        text-align: center;
+                    } 
+                }
+            }
+
+            tbody {
+                tr {
+                    &:nth-child(even) {
+                        background-color: $cinza-medio;
+                    }
+                    
+                    &:hover {
+                        background-color: $cinza-verde;
+                    }
+
+                    td {
+                        padding: 15px;
+                        color: $preto-txt;
+                        vertical-align: middle;
+                    }
+                    .col-pos {
+                        width: 5%;
+                        text-align: center;
+                    }
+                    .col-cpf {
+                        width: 15%;
+                        text-align: center;
+                    } 
+                    .col-nome {
+                        width: 25%;
+                        text-align: start;
+                    } 
+                    .col-data {
+                        width: 15%;
+                        text-align: center;
+                    }
+                    .col-telefone {
+                        width: 15%;
+                        text-align: center;
+                    } 
+                    .col-status {
+                        width: 5%;
+                        text-align: center;
+
+                        .status-badge {
+                            display: flex;
+                            height: 32px;
+                            justify-content: center;
+                            align-items: center;
+                            border-radius: 16px;
+                            font-weight: bold;
+                            font-size: 0.8em;
+                            letter-spacing: 1px;
+
+                            &.status-ativo {
+                                background-color: $status-ativo;
+                                color: $preto-txt;
+                            }
+                            &.status-inativo {
+                                background-color: $status-inativo;
+                                color: $preto-txt;
+                            }
+                        }
+                    } 
+                    .col-acao {
+                        width: 10%;
+                        text-align: center;
+                    }
+                }
+            }
+
+            .linha-vazia {
+                text-align: center;
+                color: $cinza-claro;
+                font-style: italic;
+                padding: 40px;
+            }
+
+            .coluna-acoes {
+                display: flex;
+                gap: 10px;
+            }
+
+            .btn-editar {
+                width: 100px;
+                height: 32px;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: bold;
+                font-size: 0.9em;
+                text-decoration: none;
+                display: inline-block;
+                background-color: $button-editar;
+                color: $preto-txt;
+                letter-spacing: 1px;
+
+                &:hover {
+                    background-color: color.adjust($button-editar, $lightness: -10%);
+                }
+            }
+        }
+    }
+}
+

@@ -1,0 +1,78 @@
+@use '../../styles/cor_modelo.scss' as *;
+@use "sass:color";
+
+.login-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-image: url('/assets/background.png');
+    background-size: cover;         // Faz a imagem cobrir a tela sem distorcer
+    background-repeat: no-repeat;   // Impede que a imagem se repita
+    background-position: center;    // Centraliza a imagem na tela
+  
+    .logo {
+      width: 180px;
+      margin-bottom: 30px;
+    }
+  
+    .login-box {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 200px;
+      gap: 10px;
+      padding: 20px;
+      background-color: $background;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(color.adjust($verde-principal, $lightness: -10%), 0.2 );
+      min-width: 500px;
+
+        .box-button{
+            display: flex;
+            flex-wrap: wrap;
+
+            input {
+                width: 100%;
+                padding: 10px;
+                margin-bottom: 20px;
+                border-radius: 6px;
+                border: 1px solid $cinza-borda;
+                font-size: 16px;
+                outline: none;
+                transition: border-color 0.3s ease;
+                
+                &:focus {
+                    outline: none;
+                    border-color: $select-input;
+                    box-shadow: 0 0 4px rgba($select-input, 0.4); 
+                }
+
+                &.error {
+                    border-color: red;
+                }
+                
+            }
+        }
+  
+      .error-message {
+        height: 20px;
+        color: red;
+        font-size: 14px;
+        text-align: center;
+      }
+  
+      button {
+        padding: 10px;
+        background-color: #0f6d3a;
+        color: white;
+        font-weight: bold;
+        font-size: 16px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+    }
+  }
+  

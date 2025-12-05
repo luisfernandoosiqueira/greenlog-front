@@ -1,0 +1,130 @@
+@use '../../styles/cor_modelo.scss' as *;
+@use "sass:color";
+
+section{
+    width: 100%;
+    background-color: $cinza-claro;
+    border: 1px solid $cinza-borda;
+    padding: 10px;
+    border-radius: 10px;
+
+    .header{
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding: 10px 0;
+
+        img{
+            height: 32px;
+            padding-right: 20px;
+        }
+
+        h2{
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        h3{
+            font-size: 1em;
+            font-weight: 500;
+        }
+
+        .preencher-espaco{
+            flex: 1;
+        }
+    }
+    .row{
+        display: flex;
+        width: 100%;
+        padding: 20px 0;
+        justify-content: space-between;
+
+        .group{
+            display: flex;
+            flex: 3;
+            align-items: center;
+
+            h4{
+                font-size: 1em;
+                font-weight: bold;
+                padding-right: 0.5em;
+            }
+
+            h3{
+                font-size: 1em;
+                font-weight: bold;
+            }
+
+            label{
+                font-size: 1em;
+                font-weight: 400;
+            }
+
+            img{
+                height: 32px;
+                padding-right: 0.5em;
+            }
+
+            .img-rota{
+                height: 24px;
+                padding-right: 0.5em;
+            }
+
+        }
+    }
+
+    .line{
+        border-bottom: 1px dashed $verde-principal;
+    }
+
+    .line-wrapper {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 10;
+    }
+
+    .line-label {
+        text-align: center;
+        font-size: 0.8em;
+    }
+
+    .line-seta {
+        position: relative;
+        width: 100%;
+        height: 2px;
+        background: black;
+        border-radius: 10/2;
+
+        &::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            right: -8px;         // seta fica "para fora" da linha
+            transform: translateY(-50%);
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-left: 8px solid black;
+            border-radius: 6px;
+        }
+    }
+
+    .container-rotas{
+        .row-rota{
+            display: flex;
+            align-items: center;
+            width: 100%;
+            gap: 10px;
+
+            span{
+                font-size: 1em;
+                font-weight: 500;
+                padding: 10px;
+            }
+
+            .seta{
+                flex: 1;
+            }
+        }
+    }
+}

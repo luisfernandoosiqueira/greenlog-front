@@ -1,0 +1,119 @@
+@use '../../styles/cor_modelo.scss' as *;
+@use "sass:color";
+
+main {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 30px;
+    min-height: calc(100vh - 120px);
+
+    .header-pagina {
+        display: flex;
+        justify-content: start;
+        align-items: center;
+        margin-bottom: 25px;
+
+        a img{
+            height: 32px;
+        }
+
+        h1 {
+            color: $verde-principal;
+            margin: 0;
+        }
+
+        .btn-voltar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 0;
+            width: 50px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.5s ease;
+            padding-right: 60px;
+
+            &:hover {
+                transform: scale(1.1);
+            }
+        }
+    }
+
+    .header-pesquisa{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+
+        .box-select{
+            width: 20%;
+            min-width: 400px;
+            display: flex;
+            justify-content: start;
+            align-items: center;
+
+            label {
+                min-width: 180px;
+                font-weight: bold;
+                font-size: 1.1em;
+                color: $preto-txt;
+                padding-right: 10px;
+            }
+
+            input[type="date"] {
+                width: 100%;
+                padding: 12px;
+                border: 1px solid $cinza-txt;
+                border-radius: 6px;
+                background-color: $branco;
+                font-size: 1em;
+                box-sizing: border-box;
+
+                &:focus {
+                    outline: none;
+                    border-color: $select-input;
+                    box-shadow: 0 0 4px rgba($select-input, 0.4); 
+                }
+            }
+        }
+
+        .box-btn{
+            display: flex;
+            justify-content: start;
+            align-items: center;
+            gap: 20px;
+
+            .btn-novo,
+            .btn-pesquisar {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: $verde-secundario;
+                color: $background;
+                padding: 10px 0;
+                width: 140px;
+                border-radius: 8px;
+                text-decoration: none;
+                font-weight: bold;
+                border: none;
+                cursor: pointer;
+                font-size: 0.9em;
+                transition: background-color 0.5s ease;
+
+                &:hover {
+                    background-color: color.adjust($verde-secundario, $lightness: -10%);
+                }
+            }
+
+            .btn-pesquisar{
+                background-color: $verde-principal;
+            }
+        }
+    }
+    .container-itinerario{
+        width: 100%;
+    }
+}

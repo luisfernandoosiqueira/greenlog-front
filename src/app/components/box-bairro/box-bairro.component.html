@@ -1,0 +1,49 @@
+<div class="box">
+    <div class="header">
+        <h2>{{bairro?.nome}}</h2>
+        <div class="box-btn">
+            <button class="btn btn-editar" (click)="abrirModalEditarBairro(bairro!)">Editar</button>
+            <!-- <button class="btn btn-excluir">Excluir</button> -->
+            <button class="btn btn-novo-ponto" (click)="abrirModalNovoPonto()">Novo Ponto</button>
+        </div>
+    </div>
+    <div class="pontos-coletas" *ngFor="let ponto of bairro?.pontosColetas; let i = index">
+        <div class="box-ponto">
+            <div class="coluna">
+                <label>Ponto:</label>
+                <span>{{ponto.nome}}</span>
+            </div>
+            <div class="coluna">
+                <label>Resíduos:</label>
+                <span>{{getTiposResiduos(ponto)}}</span>
+            </div>
+            <div class="coluna">
+                <label>Responsável:</label>
+                <span>{{ponto.responsavel}}</span>
+            </div>
+            <div class="coluna">
+                <label>Telefone:</label>
+                <span>{{ponto.telefone}}</span>
+            </div>
+            <button class="btn-editar" (click)="abrirModalEditarPonto(ponto)">Editar</button>
+            <button class="btn-excluir">Excluir</button>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="exibirModalBairro">
+    <app-novo-bairro
+        [bairroParaEditar]="bairroParaAtualizar"
+        (aoSalvar)="salvarBairro($event); fecharModalBairro()" 
+        (aoCancelar)="fecharModalBairro()">
+    </app-novo-bairro>
+</div>
+
+<div *ngIf="exibirModalPonto">
+    <app-novo-ponto
+        [bairroId]="bairro!.id"
+        [pontoParaEditar]="pontoParaAtualizar"
+        (aoSalvar)="salvarPonto($event); fecharModalPonto()" 
+        (aoCancelar)="fecharModalPonto()">
+    </app-novo-ponto>
+</div>

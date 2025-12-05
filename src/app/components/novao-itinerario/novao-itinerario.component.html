@@ -1,0 +1,28 @@
+<div class="modal-backdrop">
+    <div class="modal">
+        <h2>{{ itinerarioParaEditar ? 'Editar Itinerario' : 'Novo Itinerario' }}</h2>
+        <form [formGroup]="form" (ngSubmit)="salvar()">
+            <div class="row">
+                <div class="form-group">
+                    <label>Bairro Destino*</label>
+                    <select formControlName="rotaId">
+                        <option [value]="null" disabled>Selecione...</option>
+                        <option *ngFor="let rota of listaRotas" [value]="rota.id">
+                            {{ rota.nome }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label>Data*</label>
+                    <input type="date" formControlName="data"> 
+                </div>
+            </div>
+            <div class="actions">
+                <button type="button" (click)="cancelar()" class="btn-cancel">Cancelar</button>
+                <button type="submit" class="btn-save" [disabled]="form.invalid">{{ itinerarioParaEditar ? 'Atualizar' : 'Salvar' }}</button>
+            </div>
+        </form>
+    </div>
+</div>
