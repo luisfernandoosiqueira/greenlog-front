@@ -16,18 +16,34 @@ export interface UsuarioLogado {
   perfil: PerfilUsuario;
 }
 
+export interface UsuarioRequest {
+  username: string;
+  senha: string;
+  perfil: PerfilUsuario;
+}
+
+export interface UsuarioResponse {
+  id: number;
+  username: string;
+  perfil: PerfilUsuario;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private baseUrl = 'http://localhost:8080/api/auth';
+  // AuthController
+  private readonly AUTH_BASE_URL = 'http://localhost:8080/api';
+  // UsuarioController
+  private readonly USUARIO_BASE_URL = 'http://localhost:8080/api/usuarios';
+
   private readonly STORAGE_KEY = 'usuarioLogado';
 
   constructor(private http: HttpClient) {}
 
   login(credentials: { username: string; senha: string }): Observable<UsuarioLogado> {
     return this.http
-      .post<LoginResponse>(`${this.baseUrl}/login`, credentials)
+      .post<LoginResponse>(`${this.AUTH_BASE_URL}/login`, credentials)
       .pipe(
         map((res) => {
           const usuario: UsuarioLogado = {
@@ -41,8 +57,8 @@ export class AuthService {
       );
   }
 
-  register(credentials: { username: string; senha: string }): Observable<any> {
-    return this.http.post(`${this.baseUrl}/register`, credentials);
+  register(usuario: UsuarioRequest): Observable<UsuarioResponse> {
+    return this.http.post<UsuarioResponse>(this.USUARIO_BASE_URL, usuario);
   }
 
   private salvarUsuario(usuario: UsuarioLogado): void {

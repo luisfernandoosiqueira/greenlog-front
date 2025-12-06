@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 
 import { AuthService } from '../../auth/auth.service';
@@ -9,7 +9,8 @@ import { AlertService } from '../../alert/alert.service';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, ReactiveFormsModule],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './login.page.html',
   styleUrl: './login.page.scss'
 })
@@ -64,7 +65,7 @@ export class LoginPage {
     return 'Erro ao tentar fazer login. Tente novamente.';
   }
 
-  login() {
+  login(): void {
     this.submitted = true;
 
     if (this.loginForm.invalid) {
@@ -81,8 +82,8 @@ export class LoginPage {
         this.alert
           .success('Bem-vindo', `Login realizado com sucesso, ${usuario.username}.`)
           .then(() => {
-            const destino = this.redirectUrl || '';
-            this.router.navigate([destino]);
+            const destino = this.redirectUrl || '/';
+            this.router.navigateByUrl(destino);
           });
       },
       error: (err: HttpErrorResponse) => {

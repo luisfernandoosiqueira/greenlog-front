@@ -1,0 +1,56 @@
+<div class="login-container">
+  <img src="assets/logo.png" class="logo" />
+
+  <form [formGroup]="form" (ngSubmit)="cadastrar()" class="login-box">
+    <div class="box-button">
+      <input
+        type="text"
+        formControlName="username"
+        placeholder="Nome de usuário"
+        [ngClass]="{ 'error': form.touched && form.controls['username'].invalid }"
+      />
+
+      <input
+        type="password"
+        formControlName="senha"
+        placeholder="Senha"
+        [ngClass]="{ 'error': form.touched && form.controls['senha'].invalid }"
+      />
+
+      <input
+        type="password"
+        formControlName="confirmarSenha"
+        placeholder="Confirmar senha"
+        [ngClass]="{
+          'error':
+            form.touched &&
+            (form.controls['confirmarSenha'].invalid || form.hasError('senhasDiferentes'))
+        }"
+      />
+
+      <select
+        formControlName="perfil"
+        [ngClass]="{ 'error': form.touched && form.controls['perfil'].invalid }"
+      >
+        <option [ngValue]="null" disabled>Selecione o perfil</option>
+        <option *ngFor="let p of perfis" [ngValue]="p">
+          {{ p }}
+        </option>
+      </select>
+    </div>
+
+    <div
+      class="error-message"
+      *ngIf="form.hasError('senhasDiferentes') && form.controls['confirmarSenha'].touched"
+    >
+      As senhas não conferem.
+    </div>
+
+    <button type="submit">Cadastrar</button>
+
+    <div class="error-message" style="margin-top: 12px; text-align: center;">
+      Já tem conta?
+      <a routerLink="/login">Voltar para o login</a>
+    </div>
+  </form>
+</div>
