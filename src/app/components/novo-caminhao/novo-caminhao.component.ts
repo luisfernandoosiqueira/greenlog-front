@@ -36,7 +36,7 @@ export class NovoCaminhaoComponent implements OnInit {
       tiposResiduos: this.fb.array([])
     });
 
-    // MOTORISTA
+    // CARREGA MOTORISTAS
     motoristaService.findAll().subscribe({
       next: (motorista) => this.listaMotorista = motorista,
       error: (err) => console.error("Erro ao carregar motorista", err)
@@ -44,28 +44,73 @@ export class NovoCaminhaoComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.initTiposResiduos();
+
+    if (this.caminhaoParaEditar) {
+      this.preencherFormulario();
+    }
+  }
+
+  /** Inicializa checkboxes (sempre booleanos) */
+  initTiposResiduos() {
+    const array = this.form.get('tiposResiduos') as FormArray;
+
+    // Limpa caso o modal seja reutilizado
+    array.clear();
+
+    this.tiposResiduosEnum.forEach(() =>
+      array.push(new FormControl(false))
+    );
+  }
+
+  /** Preenche os campos quando estiver editando */
+  preencherFormulario() {
+    const c = this.caminhaoParaEditar!;
+
+    this.form.patchValue({
+      placa: c.placa,
+      motoristaCpf: c.motorista.cpf,
+      capacidadeKg: c.capacidadeKg,
+      status: c.status
+    });
+
+    // Agora marcar os checkboxes
+    this.marcarTiposResiduos(c.tiposResiduos);
+  }
+
+  /** Marca os checkboxes do FormArray conforme os valores já existentes */
+  marcarTiposResiduos(residuos: string[]) {
+    const array = this.form.get('tiposResiduos') as FormArray;
+
+    this.tiposResiduosEnum.forEach((nome, index) => {
+      const marcado = residuos.includes(nome);
+      array.at(index).setValue(marcado);
+    });
   }
 
   salvar() {
-    if (this.form.valid) {
+    if (this.form.invalid) return;
 
-      const selecionadosBoolean = this.form.value.tiposResiduos;
+    const selecionadosBoolean = this.form.value.tiposResiduos;
 
-      const tiposResiduos = selecionadosBoolean
-        .map((checked: boolean, i: number) => checked ? this.tiposResiduosEnum[i] : null)
-        .filter((nome: string | null): nome is string => nome !== null);
+    const tiposResiduos = selecionadosBoolean
+      .map((checked: boolean, i: number) => checked ? this.tiposResiduosEnum[i] : null)
+      .filter((nome: string | null): nome is string => nome !== null);
 
-      const caminhaoSalvo: CaminhaoRequest = {
-        ...this.form.value,
-        tiposResiduos: tiposResiduos
-      };
+    const caminhaoSalvo: CaminhaoRequest = {
+      ...this.form.value,
+      tiposResiduos: tiposResiduos
+    };
 
-      this.aoSalvar.emit(caminhaoSalvo);
-    }
+    console.log("SALVANDO:", caminhaoSalvo);
+    this.aoSalvar.emit(caminhaoSalvo);
   }
 
   cancelar() {
     this.aoCancelar.emit();
   }
 }
+
+
+
 

@@ -24,12 +24,12 @@
                     <td colspan="8" class="linha-vazia">Nenhum conexão cadastrado.</td>
                 </tr>
                 <tr *ngFor="let r of listaRota; let i = index">
-                    <td class="col-pos">Nº</td>
+                    <td class="col-pos">{{i + 1}}</td>
                     <td class="col-nome">{{r.nome}}</td>
                     <td class="col-motorista">{{r.caminhao.motorista.nome}}</td>
                     <td class="col-caminhao">{{r.caminhao.placa}}</td>
-                    <td class="col-distancia">{{r.distanciaTotal}}</td>
-                    <td class="col-peso">{{r.pesoTotal}}</td>
+                    <td class="col-distancia">{{r.distanciaTotal}} km</td>
+                    <td class="col-peso">{{r.pesoTotal}} kg</td>
                     <td class="col-residuo">{{r.tipoResiduo}}</td>
                     <td class="col-acao"><button (click)="abrirModalEditar(r)" class="btn-editar">Editar</button></td>
                 </tr>
