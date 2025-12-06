@@ -42,7 +42,14 @@
             <div class="row">
                 <div class="form-group">
                     <label>Estimativa de quantidade por coleta:*</label>
-                    <input type="text" formControlName="quantidadeResiduosKg" placeholder="00">
+                    <input
+    type="text"
+    formControlName="quantidadeResiduosKg"
+    mask="separator.0"
+    suffix=" kg"
+    thousandSeparator="."
+    placeholder="00"
+  >
                 </div>
             </div>
             <div class="row">

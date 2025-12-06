@@ -7,7 +7,7 @@
                     <label>Placa*</label>
                     <input type="text" mask="AAA0A00" formControlName="placa" placeholder="AAA0A00">
                 </div>
-                <div class="form-group">
+                <div class="form-group" *ngIf="listaMotorista.length">
                     <label>Motorista*</label>
                     <select formControlName="motoristaCpf">
                         <option [ngValue]="null" disabled>Selecione...</option>

@@ -3,10 +3,11 @@ import { PontoColetaRequest, PontoColetaResponse } from '../../model/PontoColeta
 import { FormArray, FormBuilder, FormControl, FormGroup, NgModel, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TipoResiduo } from '../../model/enums/TipoResiduo';
+import { NgxMaskDirective } from 'ngx-mask';
 
 @Component({
   selector: 'app-novo-ponto',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, NgxMaskDirective],
   templateUrl: './novo-ponto.component.html',
   styleUrl: './novo-ponto.component.scss'
 })
@@ -37,6 +38,42 @@ export class NovoPontoComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.initTiposResiduos();
+
+    if (this.pontoParaEditar) {
+      this.preencherFormularioEdicao();
+    }
+  }
+
+  // 🔥 CRIA OS CHECKBOXES DINAMICAMENTE
+  initTiposResiduos() {
+    const array = this.form.get('tiposResiduos') as FormArray;
+    array.clear();
+
+    this.tiposResiduosEnum.forEach(() => {
+      array.push(new FormControl(false));
+    });
+  }
+
+  preencherFormularioEdicao() {
+    this.form.patchValue({
+      bairroId: this.pontoParaEditar?.bairro,
+      nome: this.pontoParaEditar?.nome,
+      responsavel: this.pontoParaEditar?.responsavel,
+      telefone: this.pontoParaEditar?.telefone,
+      email: this.pontoParaEditar?.email,
+      endereco: this.pontoParaEditar?.endereco,
+      horaEntrada: this.pontoParaEditar?.horaEntrada,
+      horaSaida: this.pontoParaEditar?.horaSaida,
+      quantidadeResiduosKg: this.pontoParaEditar?.quantidadeResiduosKg
+    });
+
+    const array = this.form.get('tiposResiduos') as FormArray;
+
+    this.tiposResiduosEnum.forEach((tipo, index) => {
+      const selecionado = this.pontoParaEditar!.tiposResiduos.includes(tipo as any);
+      array.at(index).setValue(selecionado);
+    });
   }
 
   salvar() {
