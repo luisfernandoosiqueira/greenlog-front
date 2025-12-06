@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { PontoColetaRequest, PontoColetaResponse } from '../../model/PontoColeta';
-import { FormArray, FormBuilder, FormControl, FormGroup, NgModel, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TipoResiduo } from '../../model/enums/TipoResiduo';
 import { NgxMaskDirective } from 'ngx-mask';
+import { AlertService } from '../../alert/alert.service';
 
 @Component({
   selector: 'app-novo-ponto',
@@ -21,8 +22,12 @@ export class NovoPontoComponent implements OnInit {
   tiposResiduosEnum = Object.keys(TipoResiduo);
 
   form: FormGroup;
+  formAlterado = false;
 
-  constructor(private fb: FormBuilder){
+  constructor(
+    private fb: FormBuilder,
+    private alert: AlertService
+  ) {
     this.form = this.fb.group({
       bairroId: [''],
       nome: ['', [Validators.required, Validators.minLength(3)]],
@@ -34,7 +39,7 @@ export class NovoPontoComponent implements OnInit {
       horaSaida: ['', [Validators.required]],
       quantidadeResiduosKg: ['', [Validators.required]],
       tiposResiduos: this.fb.array([])
-    })
+    });
   }
 
   ngOnInit(): void {
@@ -43,10 +48,13 @@ export class NovoPontoComponent implements OnInit {
     if (this.pontoParaEditar) {
       this.preencherFormularioEdicao();
     }
+
+    this.form.valueChanges.subscribe(() => {
+      this.formAlterado = true;
+    });
   }
 
-  // 🔥 CRIA OS CHECKBOXES DINAMICAMENTE
-  initTiposResiduos() {
+  initTiposResiduos(): void {
     const array = this.form.get('tiposResiduos') as FormArray;
     array.clear();
 
@@ -55,7 +63,7 @@ export class NovoPontoComponent implements OnInit {
     });
   }
 
-  preencherFormularioEdicao() {
+  preencherFormularioEdicao(): void {
     this.form.patchValue({
       bairroId: this.pontoParaEditar?.bairro,
       nome: this.pontoParaEditar?.nome,
@@ -76,26 +84,49 @@ export class NovoPontoComponent implements OnInit {
     });
   }
 
-  salvar() {
-    if (this.form.valid) {
+  salvar(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      this.alert.warn('Formulário inválido', 'Verifique os campos obrigatórios antes de salvar.');
+      return;
+    }
 
-      const selecionadosBoolean = this.form.value.tiposResiduos;
+    const selecionadosBoolean = this.form.value.tiposResiduos;
 
-      const tiposResiduoNomes = selecionadosBoolean
-        .map((checked: boolean, i: number) => checked ? this.tiposResiduosEnum[i] : null)
-        .filter((nome: string | null): nome is string => nome !== null);
+    const tiposResiduoNomes = selecionadosBoolean
+      .map((checked: boolean, i: number) => (checked ? this.tiposResiduosEnum[i] : null))
+      .filter((nome: string | null): nome is string => nome !== null);
 
-      const pontoSalvo: PontoColetaRequest = {
-        ...this.form.value,
-        bairroId: this.bairroId,
-        tiposResiduos: tiposResiduoNomes
-      };
+    const pontoSalvo: PontoColetaRequest = {
+      ...this.form.value,
+      bairroId: this.bairroId,
+      tiposResiduos: tiposResiduoNomes
+    };
 
-      this.aoSalvar.emit(pontoSalvo);
+    this.aoSalvar.emit(pontoSalvo);
+  }
+
+  cancelar(): void {
+    if (this.form.dirty || this.formAlterado) {
+      this.alert
+        .confirm('Cancelar cadastro', 'Existem alterações não salvas. Deseja cancelar mesmo assim?')
+        .then(result => {
+          if (result.isConfirmed) {
+            this.aoCancelar.emit();
+          }
+        });
+    } else {
+      this.aoCancelar.emit();
     }
   }
 
-  cancelar() {
-    this.aoCancelar.emit();
+  limparEstadoAlterado(): void {
+    this.form.markAsPristine();
+    this.form.markAsUntouched();
+    this.formAlterado = false;
+  }
+
+  temAlteracoes(): boolean {
+    return !!this.form && (this.formAlterado || this.form.dirty);
   }
 }

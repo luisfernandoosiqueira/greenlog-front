@@ -7,6 +7,7 @@ import { MotoristaResponse } from '../../model/Motorista';
 import { NgxMaskDirective } from 'ngx-mask';
 import { MotoristaService } from '../../services/motorista.service';
 import { TipoResiduo } from '../../model/enums/TipoResiduo';
+import { AlertService } from '../../alert/alert.service';
 
 @Component({
   selector: 'app-novo-caminhao',
@@ -25,9 +26,13 @@ export class NovoCaminhaoComponent implements OnInit {
   tiposResiduosEnum = Object.keys(TipoResiduo);
 
   form: FormGroup;
+  formAlterado = false;
 
-  constructor(private fb: FormBuilder, private motoristaService: MotoristaService) {
-
+  constructor(
+    private fb: FormBuilder,
+    private motoristaService: MotoristaService,
+    private alert: AlertService
+  ) {
     this.form = this.fb.group({
       placa: ['', [Validators.required, Validators.pattern(/^[A-Z]{3}[0-9][A-Z][0-9]{2}$/)]],
       motoristaCpf: [null, Validators.required],
@@ -36,10 +41,9 @@ export class NovoCaminhaoComponent implements OnInit {
       tiposResiduos: this.fb.array([])
     });
 
-    // CARREGA MOTORISTAS
     motoristaService.findAll().subscribe({
       next: (motorista) => this.listaMotorista = motorista,
-      error: (err) => console.error("Erro ao carregar motorista", err)
+      error: (err) => console.error('Erro ao carregar motorista', err)
     });
   }
 
@@ -49,13 +53,14 @@ export class NovoCaminhaoComponent implements OnInit {
     if (this.caminhaoParaEditar) {
       this.preencherFormulario();
     }
+
+    this.form.valueChanges.subscribe(() => {
+      this.formAlterado = true;
+    });
   }
 
-  /** Inicializa checkboxes (sempre booleanos) */
-  initTiposResiduos() {
+  initTiposResiduos(): void {
     const array = this.form.get('tiposResiduos') as FormArray;
-
-    // Limpa caso o modal seja reutilizado
     array.clear();
 
     this.tiposResiduosEnum.forEach(() =>
@@ -63,23 +68,18 @@ export class NovoCaminhaoComponent implements OnInit {
     );
   }
 
-  /** Preenche os campos quando estiver editando */
-  preencherFormulario() {
+  preencherFormulario(): void {
     const c = this.caminhaoParaEditar!;
-
     this.form.patchValue({
       placa: c.placa,
       motoristaCpf: c.motorista.cpf,
       capacidadeKg: c.capacidadeKg,
       status: c.status
     });
-
-    // Agora marcar os checkboxes
     this.marcarTiposResiduos(c.tiposResiduos);
   }
 
-  /** Marca os checkboxes do FormArray conforme os valores já existentes */
-  marcarTiposResiduos(residuos: string[]) {
+  marcarTiposResiduos(residuos: string[]): void {
     const array = this.form.get('tiposResiduos') as FormArray;
 
     this.tiposResiduosEnum.forEach((nome, index) => {
@@ -88,8 +88,12 @@ export class NovoCaminhaoComponent implements OnInit {
     });
   }
 
-  salvar() {
-    if (this.form.invalid) return;
+  salvar(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      this.alert.warn('Formulário inválido', 'Verifique os campos obrigatórios antes de salvar.');
+      return;
+    }
 
     const selecionadosBoolean = this.form.value.tiposResiduos;
 
@@ -102,15 +106,30 @@ export class NovoCaminhaoComponent implements OnInit {
       tiposResiduos: tiposResiduos
     };
 
-    console.log("SALVANDO:", caminhaoSalvo);
     this.aoSalvar.emit(caminhaoSalvo);
   }
 
-  cancelar() {
-    this.aoCancelar.emit();
+  cancelar(): void {
+    if (this.form.dirty || this.formAlterado) {
+      this.alert
+        .confirm('Cancelar cadastro', 'Existem alterações não salvas. Deseja cancelar mesmo assim?')
+        .then(result => {
+          if (result.isConfirmed) {
+            this.aoCancelar.emit();
+          }
+        });
+    } else {
+      this.aoCancelar.emit();
+    }
+  }
+
+  limparEstadoAlterado(): void {
+    this.form.markAsPristine();
+    this.form.markAsUntouched();
+    this.formAlterado = false;
+  }
+
+  temAlteracoes(): boolean {
+    return !!this.form && (this.formAlterado || this.form.dirty);
   }
 }
-
-
-
-
