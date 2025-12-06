@@ -1,36 +1,38 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+
+import { AuthService } from '../../auth/auth.service';
+import { AlertService } from '../../alert/alert.service';
 
 @Component({
   selector: 'app-nav-bar',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './nav-bar.component.html',
   styleUrl: './nav-bar.component.scss'
 })
 export class NavBar {
-  userName: string = '';
-  //funcionario: UsuarioResponse | null = null;
+  userName = '';
 
-  //constructor(private authService: LoginService, private router: Router) {}
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private alert: AlertService
+  ) {}
 
   ngOnInit(): void {
-    // Busca o usuário do LocalStorage
-    /*
-    this.funcionario = this.authService.getUsuarioLogado();
-
-    if (this.funcionario) {
-      this.userName = this.funcionario.nome;
-    }
+    this.userName = this.authService.getUserNome() ?? 'Usuário';
   }
 
-  logout() {
-    console.log('Usuário saiu do sistema');
-    this.authService.logout();
-    this.router.navigate(['/login']);
-  }*/
-  this.userName = "Admin";
+  logout(): void {
+    this.alert
+      .confirm('Sair do sistema', 'Deseja realmente sair?')
+      .then(result => {
+        if (result.isConfirmed) {
+          this.authService.logout();
+          this.router.navigate(['/login']);
+          this.alert.success('Sessão encerrada', 'Você saiu do sistema.');
+        }
+      });
   }
-  logout(){}
 }
-

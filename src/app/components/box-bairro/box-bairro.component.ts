@@ -1,12 +1,16 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { NovoPontoComponent } from "../novo-ponto/novo-ponto.component";
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
+
+import { NovoPontoComponent } from '../novo-ponto/novo-ponto.component';
+import { NovoBairroComponent } from '../novo-bairro/novo-bairro.component';
+
 import { BairroRequest, BairroResponse } from '../../model/Bairro';
 import { PontoColetaRequest, PontoColetaResponse } from '../../model/PontoColeta';
-import { NovoBairroComponent } from "../novo-bairro/novo-bairro.component";
 import { PontoColetaService } from '../../services/pontoColeta.service';
 import { BairroService } from '../../services/bairro.service';
+import { AlertService } from '../../alert/alert.service';
 
 @Component({
   selector: 'app-box-bairro',
@@ -17,17 +21,67 @@ import { BairroService } from '../../services/bairro.service';
 export class BoxBairroComponent implements OnInit {
   @Input() bairro: BairroResponse | null = null;
 
-  exibirModalPonto: boolean = false;
-  pontoSendoEditado: boolean = false;
+  exibirModalPonto = false;
+  pontoSendoEditado = false;
   pontoParaAtualizar: PontoColetaResponse | null = null;
 
-  exibirModalBairro: boolean = false;
-  bairroSendoEditado: boolean = false;
+  exibirModalBairro = false;
+  bairroSendoEditado = false;
   bairroParaAtualizar: BairroResponse | null = null;
 
-  constructor(private pontoColetaService: PontoColetaService, private bairroService: BairroService) {}
+  @ViewChild(NovoPontoComponent)
+  novoPontoComp?: NovoPontoComponent;
 
-  ngOnInit(): void {
+  @ViewChild(NovoBairroComponent)
+  novoBairroComp?: NovoBairroComponent;
+
+  constructor(
+    private pontoColetaService: PontoColetaService,
+    private bairroService: BairroService,
+    private alert: AlertService
+  ) {}
+
+  ngOnInit(): void {}
+
+  private extrairMensagemErro(err: HttpErrorResponse): string {
+    if (err.error) {
+      if (typeof err.error === 'string') {
+        return err.error;
+      }
+      if (err.error.message) {
+        return err.error.message;
+      }
+      if (err.error.fieldErrors) {
+        const fieldErrors = err.error.fieldErrors as Record<string, string>;
+        const mensagens = Object.values(fieldErrors);
+        if (mensagens.length > 0) {
+          return mensagens[0];
+        }
+      }
+    }
+    if (err.status === 0) {
+      return 'Não foi possível conectar ao servidor.';
+    }
+    return 'Erro ao processar a requisição.';
+  }
+
+  private recarregarBairroAtual(): void {
+    if (!this.bairro?.id) {
+      return;
+    }
+
+    this.bairroService.findAll().subscribe({
+      next: (bairros) => {
+        const encontrado = bairros.find(b => b.id === this.bairro?.id);
+        if (encontrado) {
+          this.bairro = encontrado;
+        }
+      },
+      error: (err: HttpErrorResponse) => {
+        const mensagem = this.extrairMensagemErro(err);
+        this.alert.error('Erro ao recarregar bairro', mensagem);
+      }
+    });
   }
 
   abrirModalNovoBairro() {
@@ -67,48 +121,73 @@ export class BoxBairroComponent implements OnInit {
   }
 
   getTiposResiduos(ponto: PontoColetaResponse): string {
-    return ponto.tiposResiduos?.join(", ") || "";
+    return ponto.tiposResiduos?.join(', ') || '';
   }
 
   salvarPonto(pontoColetaSalvo: PontoColetaRequest) {
-    if(this.pontoSendoEditado){
-      if(this.pontoParaAtualizar?.id == null) throw new Error('O id do ponto de coleta não pode ser nulo ao tentar salvar.');
+    if (this.pontoSendoEditado) {
+      if (this.pontoParaAtualizar?.id == null) {
+        throw new Error('O id do ponto de coleta não pode ser nulo ao tentar salvar.');
+      }
+
       this.pontoColetaService.update(pontoColetaSalvo, this.pontoParaAtualizar.id).subscribe({
-        next: (resposta) => {
-          console.log('Ponto de coleta atualizar com sucesso!' + resposta);
-          this.fecharModalPonto();
+        next: () => {
+          this.alert
+            .success('Sucesso', 'Ponto de coleta atualizado com sucesso.')
+            .then(() => {
+              this.novoPontoComp?.limparEstadoAlterado();
+              this.recarregarBairroAtual();
+              this.fecharModalPonto();
+            });
         },
-        error: (erro) => {
+        error: (erro: HttpErrorResponse) => {
           console.error('Erros ao atualizar um ponto de coleta: ', erro);
+          const mensagem = this.extrairMensagemErro(erro);
+          this.alert.error('Erro ao atualizar ponto de coleta', mensagem);
         }
-      })
-    }else{
+      });
+    } else {
       this.pontoColetaService.create(pontoColetaSalvo).subscribe({
-        next: (resposta) => {
-          console.log('Ponto de coleta cadastrado com sucesso!' + resposta);
-          this.fecharModalPonto();
+        next: () => {
+          this.alert
+            .success('Sucesso', 'Ponto de coleta cadastrado com sucesso.')
+            .then(() => {
+              this.novoPontoComp?.limparEstadoAlterado();
+              this.recarregarBairroAtual();
+              this.fecharModalPonto();
+            });
         },
-        error: (erro) => {
+        error: (erro: HttpErrorResponse) => {
           console.error('Erros ao cadastrar um ponto de coleta: ', erro);
+          const mensagem = this.extrairMensagemErro(erro);
+          this.alert.error('Erro ao cadastrar ponto de coleta', mensagem);
         }
-      })
-      this.fecharModalPonto();
+      });
     }
   }
 
   salvarBairro(bairroSalvo: BairroRequest) {
-    if(this.bairroSendoEditado){
-      if(this.bairroParaAtualizar?.id == null) throw new Error('O id de bairro não pode ser nulo ao tentar salvar.');
+    if (this.bairroSendoEditado) {
+      if (this.bairroParaAtualizar?.id == null) {
+        throw new Error('O id de bairro não pode ser nulo ao tentar salvar.');
+      }
+
       this.bairroService.update(bairroSalvo, this.bairroParaAtualizar.id).subscribe({
-        next: (resposta) => {
-          console.log('Bairro atualizar com sucesso!');
-          this.fecharModalBairro();
+        next: () => {
+          this.alert
+            .success('Sucesso', 'Bairro atualizado com sucesso.')
+            .then(() => {
+              this.novoBairroComp?.limparEstadoAlterado();
+              this.recarregarBairroAtual();
+              this.fecharModalBairro();
+            });
         },
-        error: (erro) => {
+        error: (erro: HttpErrorResponse) => {
           console.error('Erros ao atualizar um bairro: ', erro);
+          const mensagem = this.extrairMensagemErro(erro);
+          this.alert.error('Erro ao atualizar bairro', mensagem);
         }
-      })
+      });
     }
   }
-
 }

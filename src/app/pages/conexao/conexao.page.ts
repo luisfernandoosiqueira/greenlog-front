@@ -1,13 +1,18 @@
-import { Component } from '@angular/core';
-import { NavBar } from "../../components/nav-bar/nav-bar.component";
-import { FooterComponent } from "../../components/footer/footer.component";
 import { CommonModule } from '@angular/common';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+
+import { NavBar } from '../../components/nav-bar/nav-bar.component';
+import { FooterComponent } from '../../components/footer/footer.component';
+import { NovaRuaComponent } from '../../components/nova-rua/nova-rua.component';
+
 import { RuaRequest, RuaResponse } from '../../model/Rua';
 import { BairroSimplesResponse } from '../../model/Bairro';
-import { NovaRuaComponent } from "../../components/nova-rua/nova-rua.component";
 import { BairroService } from '../../services/bairro.service';
 import { ConexaoService } from '../../services/conexao.service';
+import { AlertService } from '../../alert/alert.service';
+import { CanComponentDeactivate } from '../../auth/unsaved-changes.guard';
 
 @Component({
   selector: 'app-conexao',
@@ -15,93 +20,146 @@ import { ConexaoService } from '../../services/conexao.service';
   templateUrl: './conexao.page.html',
   styleUrl: './conexao.page.scss'
 })
-export class ConexaoPage {
+export class ConexaoPage implements OnInit, CanComponentDeactivate {
 
   listaRuas: RuaResponse[] = [];
-  listaBairros: BairroSimplesResponse [] = [];
+  listaBairros: BairroSimplesResponse[] = [];
 
-  exibirModal: boolean = false;
-  ruaSendoEditado: boolean = false;
+  exibirModal = false;
+  ruaSendoEditado = false;
   ruaParaAtualizar: RuaResponse | null = null;
 
-  constructor(private bairroService: BairroService, private ruaConexaoService: ConexaoService) {
+  @ViewChild(NovaRuaComponent)
+  novaRuaComponent?: NovaRuaComponent;
+
+  constructor(
+    private bairroService: BairroService,
+    private ruaConexaoService: ConexaoService,
+    private alert: AlertService
+  ) {}
+
+  ngOnInit(): void {
+    this.carregarBairros();
+    this.carregarRuas();
+  }
+
+  private carregarBairros(): void {
     this.bairroService.findAll().subscribe({
       next: (bairros) => {
         this.listaBairros = bairros;
-        console.log("Bairros carregados:", bairros);
+        console.log('Bairros carregados:', bairros);
       },
-      error: (err) => {
-        console.error("Erro ao carregar bairros", err);
+      error: (err: HttpErrorResponse) => {
+        console.error('Erro ao carregar bairros', err);
+        const mensagem = this.extrairMensagemErro(err);
+        this.alert.error('Erro ao carregar bairros', mensagem);
       }
     });
+  }
 
+  private carregarRuas(): void {
     this.ruaConexaoService.findAll().subscribe({
       next: (ruas) => {
         this.listaRuas = ruas;
-        console.log("Ruas carregados:", ruas);
+        console.log('Ruas carregadas:', ruas);
       },
-      error: (err) => {
-        console.error("Erro ao carregar ruas", err);
+      error: (err: HttpErrorResponse) => {
+        console.error('Erro ao carregar ruas', err);
+        const mensagem = this.extrairMensagemErro(err);
+        this.alert.error('Erro ao carregar conexões entre bairros', mensagem);
       }
     });
   }
 
-  ngOnInit(): void {
+  private extrairMensagemErro(err: HttpErrorResponse): string {
+    if (err.error) {
+      if (typeof err.error === 'string') {
+        return err.error;
+      }
+
+      if (err.error.message) {
+        return err.error.message;
+      }
+
+      if (err.error.fieldErrors) {
+        const fieldErrors = err.error.fieldErrors as Record<string, string>;
+        const mensagens = Object.values(fieldErrors);
+        if (mensagens.length > 0) {
+          return mensagens[0];
+        }
+      }
+    }
+
+    if (err.status === 0) {
+      return 'Não foi possível conectar ao servidor.';
+    }
+
+    return 'Erro ao processar a requisição.';
   }
 
-  abrirModalNovo() {
+  abrirModalNovo(): void {
     this.ruaParaAtualizar = null;
     this.exibirModal = true;
     this.ruaSendoEditado = false;
   }
 
-  abrirModalEditar(rua: RuaResponse) {
+  abrirModalEditar(rua: RuaResponse): void {
     this.ruaParaAtualizar = rua;
     this.exibirModal = true;
     this.ruaSendoEditado = true;
   }
 
-  fecharModel() {
+  fecharModel(): void {
     this.ruaParaAtualizar = null;
     this.exibirModal = false;
     this.ruaSendoEditado = false;
   }
 
   getBairroNome(bairroId: number): string {
-    console.log("Passando: " + bairroId);
     const bairro = this.listaBairros.find(b => b.id === bairroId);
-    return bairro ? bairro.nome : "Desconhecido";
+    return bairro ? bairro.nome : 'Desconhecido';
   }
 
-  salvar(ruaSalvo: RuaRequest){
-    if(this.ruaSendoEditado){
-      if(this.ruaParaAtualizar?.id == null) throw new Error('O cpf do motorista não pode ser nulo ao tentar salvar.');
+  salvar(ruaSalvo: RuaRequest): void {
+    if (this.ruaSendoEditado) {
+      if (this.ruaParaAtualizar?.id == null) {
+        throw new Error('O id da rua não pode ser nulo ao tentar salvar.');
+      }
+
       this.ruaConexaoService.update(ruaSalvo, this.ruaParaAtualizar.id).subscribe({
-        next: (resposta) => {
-          console.log('Motorista atualizar com sucesso!');
-          this.ruaConexaoService.findAll().subscribe({
-            next: (dadosApi) => this.listaRuas = dadosApi
-          });
+        next: () => {
+          this.alert.success('Sucesso', 'Conexão atualizada com sucesso.');
+          this.novaRuaComponent?.limparEstadoAlterado();
+          this.carregarRuas();
           this.fecharModel();
         },
-        error: (erro) => {
-          console.error('Erros ao atualizar um motorista: ', erro);
+        error: (erro: HttpErrorResponse) => {
+          console.error('Erros ao atualizar uma rua: ', erro);
+          const mensagem = this.extrairMensagemErro(erro);
+          this.alert.error('Erro ao atualizar conexão', mensagem);
         }
-      })
-    }else{
+      });
+    } else {
       this.ruaConexaoService.create(ruaSalvo).subscribe({
-        next: (resposta) => {
-          console.log('Motorista cadastrado com sucesso!');
-          this.ruaConexaoService.findAll().subscribe({
-            next: (dadosApi) => this.listaRuas = dadosApi
-          });
+        next: () => {
+          this.alert.success('Sucesso', 'Conexão cadastrada com sucesso.');
+          this.novaRuaComponent?.limparEstadoAlterado();
+          this.carregarRuas();
           this.fecharModel();
         },
-        error: (erro) => {
-          console.error('Erros ao cadastrar um motorista: ', erro);
+        error: (erro: HttpErrorResponse) => {
+          console.error('Erros ao cadastrar uma rua: ', erro);
+          const mensagem = this.extrairMensagemErro(erro);
+          this.alert.error('Erro ao cadastrar conexão', mensagem);
         }
-      })
-      this.fecharModel();
+      });
     }
+  }
+
+  podeSair(): boolean {
+    if (this.exibirModal && this.novaRuaComponent?.temAlteracoes()) {
+      return false;
+    }
+    return true;
   }
 }
