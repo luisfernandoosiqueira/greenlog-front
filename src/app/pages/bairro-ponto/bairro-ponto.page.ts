@@ -78,6 +78,7 @@ export class BairroPontoPage implements OnInit, CanComponentDeactivate {
 
   abrirModalNovoBairro(): void {
     this.exibirModalBairro = true;
+    this.novoBairroComponent?.limparEstadoAlterado();
   }
 
   abrirModalBairroEditar(): void {
@@ -92,10 +93,13 @@ export class BairroPontoPage implements OnInit, CanComponentDeactivate {
   salvarBairro(bairroSalvo: BairroRequest): void {
     this.bairroService.create(bairroSalvo).subscribe({
       next: () => {
-        this.alert.success('Sucesso', 'Bairro cadastrado com sucesso.');
-        this.novoBairroComponent?.limparEstadoAlterado();
-        this.carregarBairros();
-        this.fecharModalBairro();
+        this.alert
+          .success('Sucesso', 'Bairro cadastrado com sucesso.')
+          .then(() => {
+            this.novoBairroComponent?.limparEstadoAlterado();
+            this.carregarBairros();
+            this.fecharModalBairro();
+          });
       },
       error: (erro: HttpErrorResponse) => {
         console.error('Erros ao cadastrar um bairro: ', erro);
@@ -110,9 +114,6 @@ export class BairroPontoPage implements OnInit, CanComponentDeactivate {
   }
 
   podeSair(): boolean {
-    if (this.exibirModalBairro && this.novoBairroComponent?.temAlteracoes()) {
-      return false;
-    }
-    return true;
+    return !(this.exibirModalBairro && this.novoBairroComponent?.temAlteracoes());
   }
 }

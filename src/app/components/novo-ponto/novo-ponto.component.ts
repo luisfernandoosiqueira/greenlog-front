@@ -45,6 +45,9 @@ export class NovoPontoComponent implements OnInit {
   ngOnInit(): void {
     this.initTiposResiduos();
 
+    // garante que o form conhece o bairroId atual
+    this.form.patchValue({ bairroId: this.bairroId });
+
     if (this.pontoParaEditar) {
       this.preencherFormularioEdicao();
     }
@@ -112,6 +115,7 @@ export class NovoPontoComponent implements OnInit {
         .confirm('Cancelar cadastro', 'Existem alterações não salvas. Deseja cancelar mesmo assim?')
         .then(result => {
           if (result.isConfirmed) {
+            this.limparEstadoAlterado();
             this.aoCancelar.emit();
           }
         });

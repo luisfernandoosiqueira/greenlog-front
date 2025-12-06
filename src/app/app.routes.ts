@@ -19,11 +19,14 @@ import { operadorGuard } from './auth/operador.guard';
 import { unsavedChangesGuard } from './auth/unsaved-changes.guard';
 
 export const routes: Routes = [
-  // rota padrão → home (se não logado, authGuard redireciona para /login)
-  { path: '', component: HomePage, canActivate: [authGuard] },
+  // rota padrão → redireciona para login (sem guard)
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
 
   // login público
   { path: 'login', component: LoginPage },
+
+  // home protegida
+  { path: 'home', component: HomePage, canActivate: [authGuard] },
 
   // cadastro de usuário público (só unsaved-changes)
   {

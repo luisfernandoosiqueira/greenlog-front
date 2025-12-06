@@ -34,7 +34,9 @@ export class LoginPage {
 
     this.redirectUrl = this.route.snapshot.queryParamMap.get('redirect');
     const authError = this.route.snapshot.queryParamMap.get('authError');
-    if (authError) {
+
+    // Mostra o alerta apenas se houve redirecionamento por guard
+    if (authError && this.redirectUrl) {
       this.alert.warn('Acesso negado', 'Faça login para continuar.');
     }
   }
@@ -82,7 +84,7 @@ export class LoginPage {
         this.alert
           .success('Bem-vindo', `Login realizado com sucesso, ${usuario.username}.`)
           .then(() => {
-            const destino = this.redirectUrl || '/';
+            const destino = this.redirectUrl || '/home';
             this.router.navigateByUrl(destino);
           });
       },
