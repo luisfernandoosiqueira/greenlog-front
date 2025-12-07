@@ -19,8 +19,8 @@ import { operadorGuard } from './auth/operador.guard';
 import { unsavedChangesGuard } from './auth/unsaved-changes.guard';
 
 export const routes: Routes = [
-  // rota padrão → redireciona para login (sem guard)
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  // raiz → home
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
 
   // login público
   { path: 'login', component: LoginPage },
@@ -28,14 +28,14 @@ export const routes: Routes = [
   // home protegida
   { path: 'home', component: HomePage, canActivate: [authGuard] },
 
-  // cadastro de usuário público (só unsaved-changes)
+  // cadastro de usuário (público, com aviso de alterações não salvas)
   {
     path: 'cadastro-usuario',
     component: CadastroUsuarioPage,
     canDeactivate: [unsavedChangesGuard]
   },
 
-  // MOTORISTA (somente ADMIN, com unsaved-changes)
+  // motorista (admin)
   {
     path: 'motorista',
     component: MotoristaPage,
@@ -43,7 +43,7 @@ export const routes: Routes = [
     canDeactivate: [unsavedChangesGuard]
   },
 
-  // CAMINHÃO (somente ADMIN, com unsaved-changes)
+  // caminhão (admin)
   {
     path: 'caminhao',
     component: CaminhaoPage,
@@ -51,7 +51,7 @@ export const routes: Routes = [
     canDeactivate: [unsavedChangesGuard]
   },
 
-  // BAIRRO / PONTOS (ADMIN + OPERADOR, com unsaved-changes)
+  // bairro / pontos (admin ou operador)
   {
     path: 'bairro',
     component: BairroPontoPage,
@@ -59,7 +59,7 @@ export const routes: Routes = [
     canDeactivate: [unsavedChangesGuard]
   },
 
-  // CONEXÕES ENTRE BAIRROS (ADMIN + OPERADOR, com unsaved-changes)
+  // conexões entre bairros (admin ou operador)
   {
     path: 'conexao',
     component: ConexaoPage,
@@ -67,7 +67,7 @@ export const routes: Routes = [
     canDeactivate: [unsavedChangesGuard]
   },
 
-  // ROTAS (ADMIN + OPERADOR, com unsaved-changes)
+  // rotas (admin ou operador)
   {
     path: 'rota',
     component: RotaPage,
@@ -75,7 +75,7 @@ export const routes: Routes = [
     canDeactivate: [unsavedChangesGuard]
   },
 
-  // ITINERÁRIOS (ADMIN + OPERADOR, com unsaved-changes)
+  // itinerários (admin ou operador)
   {
     path: 'itinerario',
     component: ItinerarioPage,
@@ -83,6 +83,6 @@ export const routes: Routes = [
     canDeactivate: [unsavedChangesGuard]
   },
 
-  // rota coringa
-  { path: '**', redirectTo: 'login' }
+  // rota coringa → home
+  { path: '**', redirectTo: 'home' }
 ];
