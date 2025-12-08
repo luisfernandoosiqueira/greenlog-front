@@ -46,8 +46,7 @@ export class ItinerarioPage implements OnInit, CanComponentDeactivate {
     private alert: AlertService
   ) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   private extrairMensagemErro(err: HttpErrorResponse): string {
     if (err.error) {
@@ -97,9 +96,21 @@ export class ItinerarioPage implements OnInit, CanComponentDeactivate {
     this.dataAtiva = true;
     this.dataSelecionada = data;
 
+    if (!data) {
+      // sem data, não exibe lista
+      this.listaItinerarioData = [];
+      return;
+    }
+
     this.itinerarioService.findAll().subscribe({
       next: (resposta) => {
-        this.listaItinerarioData = resposta;
+        const dataISO = data; // formato yyyy-MM-dd do input date
+
+        // filtra somente a data escolhida
+        this.listaItinerarioData = resposta.filter((it) =>
+          it.data && it.data.substring(0, 10) === dataISO
+        );
+
         this.fecharModel();
       },
       error: (erro: HttpErrorResponse) => {

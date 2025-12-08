@@ -19,8 +19,8 @@ import { operadorGuard } from './auth/operador.guard';
 import { unsavedChangesGuard } from './auth/unsaved-changes.guard';
 
 export const routes: Routes = [
-  // raiz → home
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  // raiz → login
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
 
   // login público
   { path: 'login', component: LoginPage },
@@ -28,7 +28,7 @@ export const routes: Routes = [
   // home protegida
   { path: 'home', component: HomePage, canActivate: [authGuard] },
 
-  // cadastro de usuário (público, com aviso de alterações não salvas)
+  // cadastro de usuário
   {
     path: 'cadastro-usuario',
     component: CadastroUsuarioPage,
@@ -59,7 +59,7 @@ export const routes: Routes = [
     canDeactivate: [unsavedChangesGuard]
   },
 
-  // conexões entre bairros (admin ou operador)
+  // conexões (admin ou operador)
   {
     path: 'conexao',
     component: ConexaoPage,
@@ -83,6 +83,6 @@ export const routes: Routes = [
     canDeactivate: [unsavedChangesGuard]
   },
 
-  // rota coringa → home
+  // coringa → home (guard decide se manda pro login)
   { path: '**', redirectTo: 'home' }
 ];
