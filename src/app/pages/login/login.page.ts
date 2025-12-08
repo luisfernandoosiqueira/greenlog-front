@@ -35,23 +35,32 @@ export class LoginPage {
     this.redirectUrl = this.route.snapshot.queryParamMap.get('redirect');
     const authError = this.route.snapshot.queryParamMap.get('authError');
 
-    // Mostra o alerta apenas se houve redirecionamento por guard
+    // alerta só quando veio redirecionado pelo guard
     if (authError && this.redirectUrl) {
       this.alert.warn('Acesso negado', 'Faça login para continuar.');
     }
   }
 
+  // tenta reaproveitar ao máximo a mensagem vinda do backend
   private extrairMensagemErro(err: HttpErrorResponse): string {
     if (err.error) {
+      // back devolvendo string simples
       if (typeof err.error === 'string') {
         return err.error;
       }
 
-      if (err.error.message) {
-        return err.error.message;
+      // objeto com message (padrão do seu back)
+      if ((err.error as any).message) {
+        return (err.error as any).message;
       }
 
-      if (err.error.fieldErrors) {
+      // eventualmente algum back pode mandar "error" descritivo
+      if ((err.error as any).error && typeof (err.error as any).error === 'string') {
+        return (err.error as any).error;
+      }
+
+      // objeto com fieldErrors no padrão { campo: "mensagem" }
+      if ((err.error as any).fieldErrors) {
         const fieldErrors = err.error.fieldErrors as Record<string, string>;
         const mensagens = Object.values(fieldErrors);
         if (mensagens.length > 0) {
@@ -60,10 +69,12 @@ export class LoginPage {
       }
     }
 
+    // erro de rede / servidor fora do ar
     if (err.status === 0) {
       return 'Não foi possível conectar ao servidor.';
     }
 
+    // fallback genérico
     return 'Erro ao tentar fazer login. Tente novamente.';
   }
 

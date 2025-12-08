@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable, map, catchError, throwError } from 'rxjs';
 
 export type PerfilUsuario = 'ADMIN' | 'OPERADOR';
 
@@ -53,12 +53,15 @@ export class AuthService {
           };
           this.salvarUsuario(usuario);
           return usuario;
-        })
+        }),
+        catchError(this.handleError)
       );
   }
 
   register(usuario: UsuarioRequest): Observable<UsuarioResponse> {
-    return this.http.post<UsuarioResponse>(this.USUARIO_BASE_URL, usuario);
+    return this.http
+      .post<UsuarioResponse>(this.USUARIO_BASE_URL, usuario)
+      .pipe(catchError(this.handleError));
   }
 
   private salvarUsuario(usuario: UsuarioLogado): void {
@@ -92,5 +95,11 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem(this.STORAGE_KEY);
+  }
+
+  // mantém o HttpErrorResponse original para o componente extrair message do backend
+  private handleError(error: any) {
+    console.error('Erro na API de autenticação/usuário: ', error);
+    return throwError(() => error);
   }
 }
