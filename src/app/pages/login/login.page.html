@@ -3,25 +3,30 @@
 
   <form [formGroup]="loginForm" (ngSubmit)="login()" class="login-box">
     <div class="box-button">
-        <input 
-            type="text" 
-            formControlName="username" 
-            placeholder="Nome de usuário"
-            [ngClass]="{ 'error': submitted && loginForm.controls['username'].invalid }"
-            />
+      <input
+        type="text"
+        formControlName="username"
+        placeholder="Nome de usuário"
+        [ngClass]="{ error: submitted && loginForm.controls['username'].invalid }"
+      />
 
-        <input 
-        type="password" 
-        formControlName="password" 
+      <input
+        type="password"
+        formControlName="senha"
         placeholder="Senha"
-        [ngClass]="{ 'error': submitted && loginForm.controls['password'].invalid }"
-        />
+        [ngClass]="{ error: submitted && loginForm.controls['senha'].invalid }"
+      />
     </div>
-    
+
     <div class="error-message" *ngIf="errorMessage">
       {{ errorMessage }}
     </div>
 
     <button type="submit">Entrar</button>
+
+    <div class="error-message" style="margin-top: 12px; text-align: center;">
+      Ainda não tem conta?
+      <a routerLink="/cadastro-usuario">Cadastrar usuário</a>
+    </div>
   </form>
 </div>

@@ -3,20 +3,21 @@
         <img src="assets/rota.png" alt="" srcset="">
         <h2>{{itinerario?.rota?.nome}}</h2>
         <span class="preencher-espaco"></span>
-        <h3>Data: {{itinerario?.data}}</h3>
+        <h3>Data: {{ itinerario?.data | date:'dd/MM/yyyy' }}</h3>
+        <button (click)="excluir()" class="btn btn-excluir">Excluir</button>
     </div>
     <div class="row">
         <div class="group">
             <h4>Distancia:</h4>
-            <label for="">{{itinerario?.distanciaTotal}}</label>
+            <label for="">{{itinerario?.distanciaTotal}} km</label>
         </div>
         <div class="group">
             <h4>Peso Previsto:</h4>
-            <label for="">{{itinerario?.rota?.pesoTotal}}</label>
+            <label for="">{{itinerario?.rota?.pesoTotal}} kg</label>
         </div>
         <div class="group">
             <h4>Status:</h4>
-            <label for="">{{itinerario?.ativo}}</label>
+            <label>{{ itinerario?.ativo ? 'ATIVO' : 'DESATIVADO' }}</label>
         </div>   
     </div>
     <div class="line"></div>
@@ -52,7 +53,7 @@
             <ng-container *ngFor="let rua of trecho.ruas">
                 <div class="seta">
                     <div class="line-wrapper">
-                        <p class="line-label">{{ rua.distanciaKm }} km</p>
+                        <p class="line-label">{{ rua.distanciaKm}} km</p>
                         <div class="line-seta"></div>
                     </div>
                 </div>

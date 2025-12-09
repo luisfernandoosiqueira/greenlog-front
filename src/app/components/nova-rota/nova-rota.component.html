@@ -40,7 +40,7 @@
           <label>Ponto Coleta 01*</label>
           <select formControlName="ponto1">
             <option value="" disabled>Selecione...</option>
-            <option *ngFor="let p of pontosDisponiveis" [value]="p.id">
+            <option *ngFor="let p of pontosDisponiveisL1" [value]="p.id">
               {{ p.nome }}
             </option>
           </select>
@@ -50,7 +50,7 @@
           <label>Ponto Coleta 02*</label>
           <select formControlName="ponto2">
             <option value="" disabled>Selecione...</option>
-            <option *ngFor="let p of pontosDisponiveis" [value]="p.id">
+            <option *ngFor="let p of pontosDisponiveisL2" [value]="p.id">
               {{ p.nome }}
             </option>
           </select>
@@ -60,7 +60,7 @@
           <label>Ponto Coleta 03*</label>
           <select formControlName="ponto3">
             <option value="" disabled>Selecione...</option>
-            <option *ngFor="let p of pontosDisponiveis" [value]="p.id">
+            <option *ngFor="let p of pontosDisponiveisL3" [value]="p.id">
               {{ p.nome }}
             </option>
           </select>

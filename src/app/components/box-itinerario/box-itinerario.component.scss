@@ -32,6 +32,29 @@ section{
         .preencher-espaco{
             flex: 1;
         }
+
+        .btn{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: $background;
+            padding: 10px 0;
+            width: 100px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.5s ease;
+            margin-left: 20px;
+        }
+        .btn-excluir{
+            background-color: $button-cancelar;
+            &:hover {
+                background-color: color.adjust($button-cancelar, $lightness: -10%);
+            }
+        }
     }
     .row{
         display: flex;
